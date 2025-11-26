@@ -1,4 +1,5 @@
 import app from "./src/app.ts";
+import connectDatabase from "./src/config/database.ts";
 import { config } from "./src/config/config.ts";
 
 const startServer = () => {
@@ -8,4 +9,6 @@ const startServer = () => {
   );
 };
 
-startServer();
+connectDatabase()
+  .then(startServer)
+  .catch((error) => console.log(`error: ${error}`));
