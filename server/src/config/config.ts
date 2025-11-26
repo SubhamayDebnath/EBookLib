@@ -3,7 +3,8 @@ dotenvConfig();
 
 const _config = {
   port: process.env.PORT,
-  MONGO_URI: process.env.MONGO_URI
+  databaseURL: process.env.MONGO_URI,
+  environment: process.env.NODE_ENV
 };
 
 export const config = Object.freeze(_config);
