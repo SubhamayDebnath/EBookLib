@@ -1,17 +1,26 @@
-import { type Request, type Response, type NextFunction } from "express";
+import type { Request, Response, NextFunction } from "express";
+import { config } from "../config/config.ts";
+
 // global error handler
 const globalErrorHandler = (
   err: any,
-  req: Request,
+  _req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   const statusCode = err.statusCode || 500;
-  return res.status(statusCode).json({
+  const errorResponse = {
     success: false,
     message: err.message,
-    stack: process.env.NODE_ENV === "development" ? err.stack : null,
-  });
+  } as {
+    success: boolean;
+    message: string;
+    stack?: string;
+  };
+  if (config.environment === "development") {
+    errorResponse.stack = err.stack;
+  }
+  return res.status(statusCode).json(errorResponse);
 };
 
 export default globalErrorHandler;
