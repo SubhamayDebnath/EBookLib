@@ -42,4 +42,9 @@ const createBook = asyncHandler(async (req: Request, res: Response) => {
 
 });
 
-export { createBook };
+const getAllBooks = asyncHandler(async (req: Request, res: Response) => {
+    const books = await Book.find().sort({ createdAt: -1 }).populate("author");
+    return res.status(200).json(new ApiResponse(200, "Books fetched successfully", books));
+});
+
+export { createBook, getAllBooks };
