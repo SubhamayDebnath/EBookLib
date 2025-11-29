@@ -1,4 +1,4 @@
-import {Schema,model} from "mongoose";
+import { Schema, model } from "mongoose";
 import type { IUser } from "./user.types.ts";
 import bcrypt from "bcryptjs";
 
@@ -33,16 +33,23 @@ const userSchema = new Schema<IUser>(
 		isActive: {
 			type: Boolean,
 			default: true,
-		}
+		},
 	},
 	{ timestamps: true }
 );
 
 userSchema.pre("save", async function () {
-	if (!this.isModified("password")) return ;
+	if (!this.isModified("password")) return;
 	const salt = await bcrypt.genSalt(10);
 	this.password = await bcrypt.hash(this.password, salt);
 });
-const User = model<IUser>("User",userSchema);
 
-export default User
+userSchema.methods.comparePassword = async function (
+	password: string
+): Promise<boolean> {
+	return await bcrypt.compare(password, this.password);
+};
+
+const User = model<IUser>("User", userSchema);
+
+export default User;
