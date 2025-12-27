@@ -38,6 +38,10 @@ const userSchema = new mongoose.Schema(
 			type: Boolean,
 			default: false,
 		},
+		isVerified: {
+			type: Boolean,
+			default: false,
+		},
 		refreshToken: {
 			type: String,
 			select: false,
@@ -57,14 +61,10 @@ const userSchema = new mongoose.Schema(
 	},
 	{ timestamps: true }
 );
-// hashed the password
-userSchema.pre("save", async function (next) {
-	if (!this.isModified("password")) {
-		return next();
-	}
+userSchema.pre("save", async function () {
+	if (!this.isModified("password")) return;
 	const salt = await bcrypt.genSalt(10);
 	this.password = await bcrypt.hash(this.password, salt);
-	next();
 });
 // compare the new password with hashed saved password
 userSchema.methods.comparePassword = async function (candidatePassword) {

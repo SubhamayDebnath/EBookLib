@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import morgan from "morgan";
+import globalErrorHandler from "./middleware/globalErrorHandler.js";
 const app = express();
 
 app.use(express.json({ limit: "10mb" }));
@@ -12,5 +13,6 @@ app.use("/api/v1", routes);
 app.use((_req, res) => {
 	return res.status(404).json({ message: "Route not found" });
 });
+app.use(globalErrorHandler);
 
 export default app;
